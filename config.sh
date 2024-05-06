@@ -2,6 +2,9 @@
 
 echo "Iniciando a configuração do ambiente..."
 
+sudo timedatectl set-ntp true
+sudo timedatectl set-timezone America/Sao_Paulo
+
 # Instalação de Nginx e Node.js
 sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
