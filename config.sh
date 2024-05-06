@@ -16,7 +16,7 @@ sudo apt install -y rabbitmq-server && \
 sudo rabbitmq-plugins enable rabbitmq_management && \
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
 sudo apt install -y ./google-chrome-stable_current_amd64.deb && \
-rm -rf google-chrome-stable_current_amd64.deb
+sudo rm -rf google-chrome-stable_current_amd64.deb
 
 # Instalação do PM2 globalmente
 sudo npm install -g pm2@latest
@@ -185,7 +185,7 @@ emailAddress=teste@gmail.com
 EOF
 
 sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
-rm $CONFIG_FILE
+sudo rm $CONFIG_FILE
 
 
 CONFIG_FILE="req.conf"
@@ -212,11 +212,11 @@ EOF
 sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
 
 # Excluindo o arquivo de configuração
-rm $CONFIG_FILE
+sudo rm $CONFIG_FILE
 
 
 
 
 echo "Configuração concluída. Por favor, configure manualmente os arquivos de configuração do Nginx."
 
-reboot
+sudo reboot
