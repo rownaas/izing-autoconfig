@@ -1,44 +1,45 @@
 #!/bin/bash
 
-echo "Iniciando a configuração do ambiente..."
+LOGFILE="/var/log/configuracao_ambiente.log"
+echo "Iniciando a configuração do ambiente..." | tee -a $LOGFILE
 
-sudo timedatectl set-local-rtc 0
-sudo systemctl restart systemd-timesyncd
+sudo timedatectl set-local-rtc 0 | tee -a $LOGFILE
+sudo systemctl restart systemd-timesyncd | tee -a $LOGFILE
 
 # Instalação de Nginx e Node.js
-sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo DEBIAN_FRONTEND=noninteractive -E bash -
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y | tee -a $LOGFILE
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo DEBIAN_FRONTEND=noninteractive -E bash - | tee -a $LOGFILE
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs | tee -a $LOGFILE
 
 sudo timedatectl set-timezone America/Sao_Paulo && \
-sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql redis-server && \ 
-sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang && \
-wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server && \
-sudo rabbitmq-plugins enable rabbitmq_management && \
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb && \
-sudo rm -rf google-chrome-stable_current_amd64.deb
+sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential | tee -a $LOGFILE && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql redis-server | tee -a $LOGFILE && \ 
+sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
+wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | tee -a $LOGFILE | sudo bash && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
+sudo rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE && \
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
+sudo rm -rf google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
-sudo npm install -g pm2@latest
+sudo npm install -g pm2@latest | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
-sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf
-sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf
-sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf
+sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
+sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
+sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf | tee -a $LOGFILE
 
 # Atualização da senha do usuário postgres e criação do banco de dados
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-sudo -u postgres psql -c "CREATE DATABASE izing;"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE izing TO postgres;"
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" | tee -a $LOGFILE
+sudo -u postgres psql -c "CREATE DATABASE izing;" | tee -a $LOGFILE
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE izing TO postgres;" | tee -a $LOGFILE
 
 # Configuração do RabbitMQ
-sudo rabbitmqctl add_user admin 123456
-sudo rabbitmqctl set_user_tags admin administrator
-sudo rabbitmqctl set_permissions -p / admin "." "." ".*"
+sudo rabbitmqctl add_user admin 123456 | tee -a $LOGFILE
+sudo rabbitmqctl set_user_tags admin administrator | tee -a $LOGFILE
+sudo rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
 
 # Clone do repositório e limpeza
 cd /home/infoway/
@@ -90,13 +91,13 @@ FACEBOOK_APP_SECRET_KEY=3266214132b8c98ac59f3e957a5efeaaa13500
 EOF
 
 # Ajuste de dependências
-sudo sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json
+sudo sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json | tee -a $LOGFILE
 
 # Instalação e construção do backend
-sudo npm install
-sudo npm run build
-sudo npx sequelize db:migrate
-sudo npx sequelize db:seed:all
+sudo npm install | tee -a $LOGFILE
+sudo npm run build | tee -a $LOGFILE
+sudo npx sequelize db:migrate | tee -a $LOGFILE
+sudo npx sequelize db:seed:all | tee -a $LOGFILE
 
 # Preparação do frontend
 cd ../frontend
@@ -105,15 +106,15 @@ echo "VUE_URL_API='https://$FRONTEND_URL'" > .env
 echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 
 # Instalação e construção do frontend
-sudo npm i -g @quasar/cli
-sudo npm install
-sudo quasar build -P -m pwa
+sudo npm i -g @quasar/cli | tee -a $LOGFILE
+sudo npm install | tee -a $LOGFILE
+sudo quasar build -P -m pwa | tee -a $LOGFILE
 cd dist/
 sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
-sudo pm2 startup ubuntu -u root
-sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend"
+sudo pm2 startup ubuntu -u root | tee -a $LOGFILE
+sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 
 
 
