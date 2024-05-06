@@ -23,7 +23,7 @@ sudo npm install -g pm2@latest
 
 # Configuração do PostgreSQL
 sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf
-sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host all all 0.0.0.0\/0 md5/' /etc/postgresql/14/main/pg_hba.conf
+sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host all all 0.0.0.0\/0 scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf
 sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf
 
 # Atualização da senha do usuário postgres e criação do banco de dados
