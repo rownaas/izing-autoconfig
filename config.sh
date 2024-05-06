@@ -8,7 +8,7 @@ sudo systemctl restart systemd-timesyncd | tee -a $LOGFILE
 
 # Instalação de Nginx e Node.js
 sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y | tee -a $LOGFILE
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo DEBIAN_FRONTEND=noninteractive -E bash - | tee -a $LOGFILE
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo DEBIAN_FRONTEND=noninteractive -E bash - | tee -a $LOGFILE
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs | tee -a $LOGFILE
 
 sudo timedatectl set-timezone America/Sao_Paulo && \
