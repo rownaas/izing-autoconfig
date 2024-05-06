@@ -14,7 +14,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs | tee -a $LOGFILE
 sudo timedatectl set-timezone America/Sao_Paulo && \
 sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE && \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential | tee -a $LOGFILE && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql redis-server | tee -a $LOGFILE && \ 
+sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql redis-server build-essential | tee -a $LOGFILE && \ 
 sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
 wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | tee -a $LOGFILE | sudo bash && \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
@@ -25,6 +25,8 @@ sudo rm -rf google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
 sudo npm install -g pm2@latest | tee -a $LOGFILE
+
+sudo npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
 sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
