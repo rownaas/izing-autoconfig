@@ -27,7 +27,7 @@ sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*
 sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf
 
 # Atualização da senha do usuário postgres e criação do banco de dados
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD '2000@23';"
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 sudo -u postgres psql -c "CREATE DATABASE izing;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE izing TO postgres;"
 
@@ -51,26 +51,35 @@ read FRONTEND_URL
 
 cat <<EOF >.env
 NODE_ENV=dev
+
 BACKEND_URL=https://$BACKEND_URL
 FRONTEND_URL=https://$FRONTEND_URL
+
 PROXY_PORT=443
 PORT=8081
+
 DB_DIALECT=postgres
 DB_PORT=5432
-POSTGRES_HOST=localhost
+
+POSTGRES_HOST=127.0.0.1
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=2000@23
+POSTGRES_PASSWORD=postgres
 POSTGRES_DB=izing
+
 JWT_SECRET=DPHmNRZWZ4isLF9vXkMv1QabvpcA80Rc
 JWT_REFRESH_SECRET=EMPehEbrAdi7s8fGSeYzqGQbV5wrjH4i
+
 IO_REDIS_SERVER=127.0.0.1
 IO_REDIS_PASSWORD=2000@23
 IO_REDIS_PORT='6379'
 IO_REDIS_DB_SESSION='2'
+
 RABBITMQ_DEFAULT_USER=admin
 RABBITMQ_DEFAULT_PASS=123456
+
 AMQP_URL='amqp://admin:123456@localhost:5672?connection_attempts=5&retry_delay=5'
 API_URL_360=https://waba-sandbox.360dialog.io
+
 FACEBOOK_APP_ID=3237415623048660
 FACEBOOK_APP_SECRET_KEY=3266214132b8c98ac59f3e957a5efeaaa13500
 EOF
