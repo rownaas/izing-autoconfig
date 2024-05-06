@@ -43,8 +43,9 @@ sudo rabbitmqctl set_permissions -p / admin "." "." ".*"
 cd ~
 git clone https://github.com/ldurans/izing.io.git
 cd izing.io
-sudo rm -rf /screenshots /.vscode .env.example
+sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg
 cd backend
+rm package-lock.json
 
 # Configuração do arquivo .env
 echo "Por favor, insira a URL do backend (exemplo: api.izing.com.br):"
@@ -106,11 +107,15 @@ echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 sudo npm i -g @quasar/cli
 sudo npm install
 sudo quasar build -P -m pwa
+cd dist/
 sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
 sudo pm2 startup ubuntu -u root
-sudo pm2 start ~/izing.io/backend/dist/server.js --name "izing-backend"
+sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend"
+
+
+
 
 # Configuração do Nginx
 sudo touch /etc/nginx/sites-available/$BACKEND_URL
@@ -143,6 +148,7 @@ server {
     }
 }
 EOF
+
 
 # Configuração do Nginx
 sudo touch /etc/nginx/sites-available/$FRONTEND_URL
@@ -202,9 +208,11 @@ sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out
 sudo rm $CONFIG_FILE
 
 
+# Configuração SSL
+
 CONFIG_FILE="req.conf"
-KEY_FILE="/etc/ssl/private/$BACKEND_URL.key"
-CERT_FILE="/etc/ssl/certs/$BACKEND_URL.crt"
+KEY_FILE="/etc/ssl/private/$FRONTEND_URL.key"
+CERT_FILE="/etc/ssl/certs/$FRONTEND_URL.crt"
 
 # Criando o arquivo de configuração
 cat > $CONFIG_FILE <<EOF
