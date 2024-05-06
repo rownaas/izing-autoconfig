@@ -93,6 +93,7 @@ echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 sudo npm i -g @quasar/cli
 sudo npm install
 sudo quasar build -P -m pwa
+sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
 sudo pm2 startup ubuntu -u root
