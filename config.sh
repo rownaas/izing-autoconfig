@@ -6,26 +6,44 @@ echo "Iniciando a configuração do ambiente..." | tee -a $LOGFILE
 sudo timedatectl set-local-rtc 0 | tee -a $LOGFILE
 sudo systemctl restart systemd-timesyncd | tee -a $LOGFILE
 
-# Instalação de Nginx e Node.js
-sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y | tee -a $LOGFILE
-curl -fsSL https://deb.nodesource.com/setup_14.x | sudo DEBIAN_FRONTEND=noninteractive -E bash - | tee -a $LOGFILE
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs | tee -a $LOGFILE
 
+# Atualização do sistema e instalação do Nginx
+sudo DEBIAN_FRONTEND=noninteractive apt update && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
+
+# Instalação do Node.js 14.21.1 usando NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm install 14.21.1
+nvm use 14.21.1
+
+# Configurações regionais e de horário
 sudo timedatectl set-timezone America/Sao_Paulo && \
-sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential | tee -a $LOGFILE && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql redis-server build-essential | tee -a $LOGFILE && \ 
+sudo DEBIAN_FRONTEND=noninteractive apt update && \
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE
+
+# Instalação de dependências de software
+sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales \
+gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 \
+libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 \
+libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 \
+libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release \
+xdg-utils python2-minimal build-essential postgresql redis-server | tee -a $LOGFILE
+
+# Configuração do RabbitMQ
 sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
-wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | tee -a $LOGFILE | sudo bash && \
+wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash && \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
-sudo rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE && \
+sudo rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE
+
+# Instalação do Google Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
 sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
-sudo rm -rf google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
+sudo rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
 sudo npm install -g pm2@latest | tee -a $LOGFILE
-
 sudo npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
