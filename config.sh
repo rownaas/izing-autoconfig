@@ -3,20 +3,19 @@
 echo "Iniciando a configuração do ambiente..."
 
 # Instalação de Nginx e Node.js
-export DEBIAN_FRONTEND=noninteractive
-sudo apt update && sudo apt install nginx -y
+sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt-get install -y nodejs
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
 
 sudo timedatectl set-timezone America/Sao_Paulo && \
-sudo apt update && sudo apt upgrade -y && \
-sudo apt install -y libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential postgresql redis-server && \
+sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y libgbm-dev wget unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils python2-minimal build-essential postgresql redis-server && \
 sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang && \
 wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash && \
-sudo apt install -y rabbitmq-server && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server && \
 sudo rabbitmq-plugins enable rabbitmq_management && \
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-sudo apt install -y ./google-chrome-stable_current_amd64.deb && \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb && \
 sudo rm -rf google-chrome-stable_current_amd64.deb
 
 # Instalação do PM2 globalmente
