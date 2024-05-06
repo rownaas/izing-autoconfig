@@ -2,8 +2,8 @@
 
 echo "Iniciando a configuração do ambiente..."
 
-sudo timedatectl set-ntp true
-sudo timedatectl set-timezone America/Sao_Paulo
+sudo timedatectl set-local-rtc 0
+sudo systemctl restart systemd-timesyncd
 
 # Instalação de Nginx e Node.js
 sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
