@@ -7,7 +7,7 @@ sudo systemctl restart systemd-timesyncd
 
 # Instalação de Nginx e Node.js
 sudo DEBIAN_FRONTEND=noninteractive apt update && sudo DEBIAN_FRONTEND=noninteractive apt install nginx -y
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo DEBIAN_FRONTEND=noninteractive -E bash -
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
 
 sudo timedatectl set-timezone America/Sao_Paulo && \
