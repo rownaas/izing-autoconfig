@@ -5,7 +5,7 @@ echo "Iniciando a configuração do ambiente..."
 # Instalação de Nginx e Node.js
 export DEBIAN_FRONTEND=noninteractive
 sudo apt update && sudo apt install nginx -y
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 sudo timedatectl set-timezone America/Sao_Paulo && \
