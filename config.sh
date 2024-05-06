@@ -40,12 +40,12 @@ sudo rabbitmqctl set_user_tags admin administrator
 sudo rabbitmqctl set_permissions -p / admin "." "." ".*"
 
 # Clone do repositório e limpeza
-cd ~
+cd /home/infoway/
 git clone https://github.com/ldurans/izing.io.git
 cd izing.io
 sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg
 cd backend
-rm package-lock.json
+rm -rf package-lock.json
 
 # Configuração do arquivo .env
 echo "Por favor, insira a URL do backend (exemplo: api.izing.com.br):"
