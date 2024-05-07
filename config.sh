@@ -85,12 +85,6 @@ sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.
 cd backend
 rm -rf package-lock.json
 
-# Configuração do arquivo .env
-echo "Por favor, insira a URL do backend (exemplo: api.izing.com.br):"
-read BACKEND_URL
-echo "Por favor, insira a URL do frontend (exemplo: izing.com.br):"
-read FRONTEND_URL
-
 cat <<EOF >.env
 NODE_ENV=dev
 
