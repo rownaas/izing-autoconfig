@@ -121,6 +121,7 @@ sudo npx sequelize db:seed:all | tee -a $LOGFILE
 
 # Preparação do frontend
 cd ../frontend
+pwd | tee -a $LOGFILE
 sudo rm -rf .env.example
 echo "VUE_URL_API='https://$FRONTEND_URL'" > .env
 echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
@@ -129,15 +130,14 @@ echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 sudo npm i -g @quasar/cli | tee -a $LOGFILE
 sudo npm install | tee -a $LOGFILE
 sudo quasar build -P -m pwa | tee -a $LOGFILE
+pwd | tee -a $LOGFILE
 cd dist/
+pwd | tee -a $LOGFILE
 sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
 sudo pm2 startup ubuntu -u root | tee -a $LOGFILE
 sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
-
-
-
 
 # Configuração do Nginx
 sudo touch /etc/nginx/sites-available/$BACKEND_URL
