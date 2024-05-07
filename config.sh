@@ -98,7 +98,7 @@ PORT=8081
 DB_DIALECT=postgres
 DB_PORT=5432
 
-POSTGRES_HOST=127.0.0.1
+POSTGRES_HOST=localhost
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=izing
@@ -110,6 +110,8 @@ IO_REDIS_SERVER=127.0.0.1
 IO_REDIS_PASSWORD=2000@23
 IO_REDIS_PORT='6379'
 IO_REDIS_DB_SESSION='2'
+
+CHROME_BIN=/usr/bin/google-chrome-stable
 
 RABBITMQ_DEFAULT_USER=admin
 RABBITMQ_DEFAULT_PASS=123456
@@ -152,8 +154,8 @@ cp -rf pwa pwa.bkp
 # Preparação do PM2
 
 source ~/.bashrc
-/usr/local/bin/pm2 startup ubuntu -u root | tee -a $LOGFILE
-/usr/local/bin/pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+pm2 startup ubuntu -u root | tee -a $LOGFILE
+pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 
 
 # Configuração do Nginx
