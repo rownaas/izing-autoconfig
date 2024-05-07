@@ -156,12 +156,12 @@ cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
 server {
     listen 80;
     server_name $BACKEND_URL;
-    return 301 https://$server_name$request_uri; # Redireciona HTTP para HTTPS
+    return 301 https://\$server_name\$request_uri # Redireciona HTTP para HTTPS
 }
 
 server {
     listen 443 ssl;
-    server_name url;
+    server_name $BACKEND_URL;
 
     ssl_certificate /etc/ssl/certs/$BACKEND_URL.crt;
     ssl_certificate_key /etc/ssl/private/$BACKEND_URL.key;
@@ -189,12 +189,12 @@ cat <<EOF >/etc/nginx/sites-available/$FRONTEND_URL
 server {
     listen 80;
     server_name $FRONTEND_URL;
-    return 301 https://$server_name$request_uri;
+    return 301 https://\$server_name\$request_uri
 }
 
 server {
     listen 443 ssl;
-    server_name url;
+    server_name $FRONTEND_URL;
 
     ssl_certificate /etc/ssl/certs/$FRONTEND_URL.crt;
     ssl_certificate_key /etc/ssl/private/$FRONTEND_URL.key;
