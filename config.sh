@@ -107,14 +107,14 @@ IO_REDIS_PASSWORD=redis
 
 CHROME_BIN=/usr/bin/google-chrome-stable
 
-MIN_SLEEP_BUSINESS_HOURS=1000
-MAX_SLEEP_BUSINESS_HOURS=2000
+MIN_SLEEP_BUSINESS_HOURS=100
+MAX_SLEEP_BUSINESS_HOURS=200
 
-MIN_SLEEP_AUTO_REPLY=400
-MAX_SLEEP_AUTO_REPLY=600
+MIN_SLEEP_AUTO_REPLY=40
+MAX_SLEEP_AUTO_REPLY=60
 
-MIN_SLEEP_INTERVAL=200
-MAX_SLEEP_INTERVAL=500
+MIN_SLEEP_INTERVAL=20
+MAX_SLEEP_INTERVAL=50
 
 # dados do RabbitMQ / Para não utilizar, basta comentar a var AMQP_URL
 RABBITMQ_DEFAULT_USER=admin
@@ -171,7 +171,7 @@ cp -rf pwa pwa.bkp
 # Preparação do PM2
 npm install -g typescript pm2 | tee -a $LOGFILE
 pm2 update
-pm2 startup ubuntu -u root | tee -a $LOGFILE
+pm2 startup systemd -u root | tee -a $LOGFILE
 pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 pm2 save
 
