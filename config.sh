@@ -60,7 +60,9 @@ DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd
 rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
+echo "Instalando o pm2: " | tee -a $LOGFILE
 npm install -g pm2@5.1 | tee -a $LOGFILE
+echo "IFinalizou o pm2." | tee -a $LOGFILE
 npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
