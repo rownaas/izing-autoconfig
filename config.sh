@@ -14,11 +14,6 @@ echo "Iniciando a configuração do ambiente..." | tee -a $LOGFILE
 timedatectl set-local-rtc 0 | tee -a $LOGFILE
 systemctl restart systemd-timesyncd | tee -a $LOGFILE
 
-
-# Atualização do sistema e instalação do Nginx
-DEBIAN_FRONTEND=noninteractive apt update && \
-DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
-
 # Instalação do Node.js 14.21.1 usando NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
