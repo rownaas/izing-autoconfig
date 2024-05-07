@@ -170,6 +170,7 @@ npm install -g typescript pm2 | tee -a $LOGFILE
 pm2 update
 pm2 startup ubuntu -u root | tee -a $LOGFILE
 pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+pm2 save
 
 # Configuração do Nginx
 DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
