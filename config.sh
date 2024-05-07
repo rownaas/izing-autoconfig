@@ -24,6 +24,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 nvm install 18
+nvm install 16
 nvm use 18
 
 # Configurações regionais e de horário
@@ -137,6 +138,9 @@ echo "VUE_URL_API='https://$FRONTEND_URL'" > .env
 echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 
 # Instalação e construção do frontend
+# Alteração do nvm para versao 16 para a instalacao do front end
+nvm use 16
+
 npm i -g @quasar/cli | tee -a $LOGFILE
 npm install | tee -a $LOGFILE
 quasar build -P -m pwa | tee -a $LOGFILE
