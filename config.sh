@@ -69,9 +69,8 @@ sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host
 sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf | tee -a $LOGFILE
 
 # Atualização da senha do usuário postgres e criação do banco de dados
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" | tee -a $LOGFILE
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD '2000@23';" | tee -a $LOGFILE
 sudo -u postgres psql -c "CREATE DATABASE izing;" | tee -a $LOGFILE
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE izing TO postgres;" | tee -a $LOGFILE
 
 # Configuração do RabbitMQ
 rabbitmqctl add_user admin 123456 | tee -a $LOGFILE
@@ -82,45 +81,77 @@ rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
 cd /home/infoway/
 git clone https://github.com/ldurans/izing.io.git
 cd izing.io
-rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg
+rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg 
 cd backend
 rm -rf package-lock.json
 
 cat <<EOF >.env
+# ambiente
 NODE_ENV=dev
 
+# URL do backend para construção dos hooks
 BACKEND_URL=https://$BACKEND_URL
+
+# URL do front para liberação do cors
 FRONTEND_URL=https://$FRONTEND_URL
 
+# Porta utilizada para proxy com o serviço do backend
 PROXY_PORT=443
+
+# Porta que o serviço do backend deverá ouvir
 PORT=8081
 
+# conexão com o banco de dados
 DB_DIALECT=postgres
 DB_PORT=5432
-
 POSTGRES_HOST=localhost
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+POSTGRES_PASSWORD=2000@23
 POSTGRES_DB=izing
 
+# Chaves para criptografia do token jwt
 JWT_SECRET=DPHmNRZWZ4isLF9vXkMv1QabvpcA80Rc
 JWT_REFRESH_SECRET=EMPehEbrAdi7s8fGSeYzqGQbV5wrjH4i
 
+# Dados de conexão com o REDIS
 IO_REDIS_SERVER=127.0.0.1
-IO_REDIS_PASSWORD=2000@23
 IO_REDIS_PORT='6379'
 IO_REDIS_DB_SESSION='2'
+IO_REDIS_PASSWORD=2000@23
 
 CHROME_BIN=/usr/bin/google-chrome-stable
 
+MIN_SLEEP_BUSINESS_HOURS=1000
+MAX_SLEEP_BUSINESS_HOURS=2000
+
+MIN_SLEEP_AUTO_REPLY=400
+MAX_SLEEP_AUTO_REPLY=600
+
+MIN_SLEEP_INTERVAL=200
+MAX_SLEEP_INTERVAL=500
+
+# dados do RabbitMQ / Para não utilizar, basta comentar a var AMQP_URL
 RABBITMQ_DEFAULT_USER=admin
 RABBITMQ_DEFAULT_PASS=123456
-
 AMQP_URL='amqp://admin:123456@localhost:5672?connection_attempts=5&retry_delay=5'
+
 API_URL_360=https://waba-sandbox.360dialog.io
 
+# usado para mosrar opções não disponíveis normalmente.
+ADMIN_DOMAIN=izing.io
+
+# Dados para utilização do canal do facebook
 FACEBOOK_APP_ID=3237415623048660
 FACEBOOK_APP_SECRET_KEY=3266214132b8c98ac59f3e957a5efeaaa13500
+
+# Forçar utilizar versão definida via cache (https://wppconnect.io/pt-BR/whatsapp-versions/)
+WEB_VERSION
+
+# Customizar opções do pool de conexões DB
+POSTGRES_POOL_MAX
+POSTGRES_POOL_MIN
+POSTGRES_POOL_ACQUIRE
+POSTGRES_POOL_IDLE
 EOF
 
 # Ajuste de dependências
