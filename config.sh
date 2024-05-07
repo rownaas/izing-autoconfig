@@ -11,28 +11,28 @@ FRONTEND_URL=$2
 LOGFILE="/var/log/configuracao_ambiente.log"
 echo "Iniciando a configuração do ambiente..." | tee -a $LOGFILE
 
-sudo timedatectl set-local-rtc 0 | tee -a $LOGFILE
-sudo systemctl restart systemd-timesyncd | tee -a $LOGFILE
+timedatectl set-local-rtc 0 | tee -a $LOGFILE
+systemctl restart systemd-timesyncd | tee -a $LOGFILE
 
 
 # Atualização do sistema e instalação do Nginx
-sudo DEBIAN_FRONTEND=noninteractive apt update && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
+DEBIAN_FRONTEND=noninteractive apt update && \
+DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
 
 # Instalação do Node.js 14.21.1 usando NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-nvm install 14.21.1
-nvm use 14.21.1
+nvm install 16
+nvm use 16
 
 # Configurações regionais e de horário
-sudo timedatectl set-timezone America/Sao_Paulo && \
-sudo DEBIAN_FRONTEND=noninteractive apt update && \
-sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE
+timedatectl set-timezone America/Sao_Paulo && \
+DEBIAN_FRONTEND=noninteractive apt update && \
+DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE
 
 # Instalação de dependências de software
-sudo DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales \
+DEBIAN_FRONTEND=noninteractive apt install -y npm libgbm-dev wget unzip fontconfig locales \
 gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 \
 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 \
 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 \
@@ -45,27 +45,27 @@ tar -zxvf nginx-1.21.0.tar.gz
 cd nginx-1.21.0/
 ./configure
 make
-sudo make install
+make install
 
 # Configuração do RabbitMQ
-sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
-wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
-sudo rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE
+add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
+wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh |  bash && \
+DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
+rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE
 
 # Instalação do Google Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
-sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
-sudo rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
+DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
+rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
-sudo npm install -g pm2@5.1 | tee -a $LOGFILE
-sudo npm install -g typescript | tee -a $LOGFILE
+npm install -g pm2@5.1 | tee -a $LOGFILE
+npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
-sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
-sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
-sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf | tee -a $LOGFILE
+sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
+sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
+sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf | tee -a $LOGFILE
 
 # Atualização da senha do usuário postgres e criação do banco de dados
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" | tee -a $LOGFILE
@@ -73,15 +73,15 @@ sudo -u postgres psql -c "CREATE DATABASE izing;" | tee -a $LOGFILE
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE izing TO postgres;" | tee -a $LOGFILE
 
 # Configuração do RabbitMQ
-sudo rabbitmqctl add_user admin 123456 | tee -a $LOGFILE
-sudo rabbitmqctl set_user_tags admin administrator | tee -a $LOGFILE
-sudo rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
+rabbitmqctl add_user admin 123456 | tee -a $LOGFILE
+rabbitmqctl set_user_tags admin administrator | tee -a $LOGFILE
+rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
 
 # Clone do repositório e limpeza
 cd /home/infoway/
 git clone https://github.com/ldurans/izing.io.git
 cd izing.io
-sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg
+rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg
 cd backend
 rm -rf package-lock.json
 
@@ -121,37 +121,37 @@ FACEBOOK_APP_SECRET_KEY=3266214132b8c98ac59f3e957a5efeaaa13500
 EOF
 
 # Ajuste de dependências
-sudo sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json | tee -a $LOGFILE
+sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json | tee -a $LOGFILE
 
 # Instalação e construção do backend
-sudo npm install | tee -a $LOGFILE
-sudo npm run build | tee -a $LOGFILE
-sudo npx sequelize db:migrate | tee -a $LOGFILE
-sudo npx sequelize db:seed:all | tee -a $LOGFILE
+npm install | tee -a $LOGFILE
+npm run build | tee -a $LOGFILE
+npx sequelize db:migrate | tee -a $LOGFILE
+npx sequelize db:seed:all | tee -a $LOGFILE
 
 # Preparação do frontend
 cd ../frontend
 pwd | tee -a $LOGFILE
-sudo rm -rf .env.example
+rm -rf .env.example
 echo "VUE_URL_API='https://$FRONTEND_URL'" > .env
 echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 
 # Instalação e construção do frontend
-sudo npm i -g @quasar/cli | tee -a $LOGFILE
-sudo npm install | tee -a $LOGFILE
-sudo quasar build -P -m pwa | tee -a $LOGFILE
+npm i -g @quasar/cli | tee -a $LOGFILE
+npm install | tee -a $LOGFILE
+quasar build -P -m pwa | tee -a $LOGFILE
 pwd | tee -a $LOGFILE
 cd dist/
 pwd | tee -a $LOGFILE
-sudo cp -rf pwa pwa.bkp
+cp -rf pwa pwa.bkp
 
 # Preparação do PM2
-sudo pm2 startup ubuntu -u root | tee -a $LOGFILE
-sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+pm2 startup ubuntu -u root | tee -a $LOGFILE
+pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 
 # Configuração do Nginx
-sudo touch /etc/nginx/sites-available/$BACKEND_URL
-sudo ln -s /etc/nginx/sites-available/$BACKEND_URL /etc/nginx/sites-enabled/
+touch /etc/nginx/sites-available/$BACKEND_URL
+ln -s /etc/nginx/sites-available/$BACKEND_URL /etc/nginx/sites-enabled/
 cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
 server {
     listen 80;
@@ -183,8 +183,8 @@ EOF
 
 
 # Configuração do Nginx
-sudo touch /etc/nginx/sites-available/$FRONTEND_URL
-sudo ln -s /etc/nginx/sites-available/$FRONTEND_URL /etc/nginx/sites-enabled/
+touch /etc/nginx/sites-available/$FRONTEND_URL
+ln -s /etc/nginx/sites-available/$FRONTEND_URL /etc/nginx/sites-enabled/
 cat <<EOF >/etc/nginx/sites-available/$FRONTEND_URL
 server {
     listen 80;
@@ -236,8 +236,8 @@ CN=Infoway
 emailAddress=teste@gmail.com
 EOF
 
-sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
-sudo rm $CONFIG_FILE
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
+rm $CONFIG_FILE
 
 
 # Configuração SSL
@@ -263,14 +263,14 @@ emailAddress=teste@gmail.com
 EOF
 
 # Executando o comando OpenSSL
-sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
 
 # Excluindo o arquivo de configuração
-sudo rm $CONFIG_FILE
+rm $CONFIG_FILE
 
 
 
 
 echo "Configuração concluída. Por favor, configure manualmente os arquivos de configuração do Nginx."
 
-sudo reboot
+reboot
