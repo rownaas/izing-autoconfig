@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ $# -ne 2 ]; then
+    echo "Uso: $0 BACKEND_URL FRONTEND_URL"
+    exit 1
+fi
+
+BACKEND_URL=$1
+FRONTEND_URL=$2
+
 LOGFILE="/var/log/configuracao_ambiente.log"
 echo "Iniciando a configuração do ambiente..." | tee -a $LOGFILE
 
@@ -51,7 +59,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_curren
 sudo rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
-sudo  install -g pm2@5.1 | tee -a $LOGFILE
+sudo npm install -g pm2@5.1 | tee -a $LOGFILE
 sudo npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
