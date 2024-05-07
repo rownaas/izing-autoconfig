@@ -35,14 +35,6 @@ libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 l
 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release \
 xdg-utils python2-minimal build-essential postgresql redis-server libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev | tee -a $LOGFILE
 
-# Instalacao do nginx
-wget http://nginx.org/download/nginx-1.21.0.tar.gz
-tar -zxvf nginx-1.21.0.tar.gz
-cd nginx-1.21.0/
-./configure
-make
-make install
-
 # Configuração do RabbitMQ
 add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
 wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh |  bash && \
@@ -53,12 +45,6 @@ rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
 DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
 rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
-
-# Instalação do PM2 globalmente
-echo "Instalando o pm2: " | tee -a $LOGFILE
-npm install -g pm2@5.1 | tee -a $LOGFILE
-echo "IFinalizou o pm2." | tee -a $LOGFILE
-npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
 sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
@@ -180,13 +166,13 @@ pwd | tee -a $LOGFILE
 cp -rf pwa pwa.bkp
 
 # Preparação do PM2
-
-source ~/.bashrc
+npm install -g typescript pm2 | tee -a $LOGFILE
+pm2 update
 pm2 startup ubuntu -u root | tee -a $LOGFILE
 pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 
-
 # Configuração do Nginx
+DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
 touch /etc/nginx/sites-available/$BACKEND_URL
 ln -s /etc/nginx/sites-available/$BACKEND_URL /etc/nginx/sites-enabled/
 cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
@@ -304,9 +290,6 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CER
 
 # Excluindo o arquivo de configuração
 rm $CONFIG_FILE
-
-
-
 
 echo "Configuração concluída. Por favor, configure manualmente os arquivos de configuração do Nginx."
 
