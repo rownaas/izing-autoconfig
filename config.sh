@@ -150,8 +150,11 @@ pwd | tee -a $LOGFILE
 cp -rf pwa pwa.bkp
 
 # Preparação do PM2
-pm2 startup ubuntu -u root | tee -a $LOGFILE
-pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+
+source ~/.bashrc
+/usr/local/bin/pm2 startup ubuntu -u root | tee -a $LOGFILE
+/usr/local/bin/pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+
 
 # Configuração do Nginx
 touch /etc/nginx/sites-available/$BACKEND_URL
@@ -160,7 +163,7 @@ cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
 server {
     listen 80;
     server_name $BACKEND_URL;
-    return 301 https://\$server_name\$request_uri # Redireciona HTTP para HTTPS
+    return 301 https://\$server_name\$request_uri; # Redireciona HTTP para HTTPS
 }
 
 server {
@@ -193,7 +196,7 @@ cat <<EOF >/etc/nginx/sites-available/$FRONTEND_URL
 server {
     listen 80;
     server_name $FRONTEND_URL;
-    return 301 https://\$server_name\$request_uri
+    return 301 https://\$server_name\$request_uri;
 }
 
 server {
