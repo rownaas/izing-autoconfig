@@ -43,7 +43,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_curren
 sudo rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Instalação do PM2 globalmente
-sudo npm install -g pm2@latest | tee -a $LOGFILE
+sudo npm install -g pm2@5.1 | tee -a $LOGFILE
 sudo npm install -g typescript | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
