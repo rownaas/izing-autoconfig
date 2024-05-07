@@ -63,10 +63,10 @@ npm install -g typescript | tee -a $LOGFILE
 # Configuração do PostgreSQL
 sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
 sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
-sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass 2000@23/' /etc/redis/redis.conf | tee -a $LOGFILE
+sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass redis/' /etc/redis/redis.conf | tee -a $LOGFILE
 
 # Atualização da senha do usuário postgres e criação do banco de dados
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD '2000@23';" | tee -a $LOGFILE
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" | tee -a $LOGFILE
 sudo -u postgres psql -c "CREATE DATABASE izing;" | tee -a $LOGFILE
 
 # Configuração do RabbitMQ
@@ -103,7 +103,7 @@ DB_DIALECT=postgres
 DB_PORT=5432
 POSTGRES_HOST=localhost
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=2000@23
+POSTGRES_PASSWORD=postgres
 POSTGRES_DB=izing
 
 # Chaves para criptografia do token jwt
@@ -114,7 +114,7 @@ JWT_REFRESH_SECRET=EMPehEbrAdi7s8fGSeYzqGQbV5wrjH4i
 IO_REDIS_SERVER=127.0.0.1
 IO_REDIS_PORT='6379'
 IO_REDIS_DB_SESSION='2'
-IO_REDIS_PASSWORD=2000@23
+IO_REDIS_PASSWORD=redis
 
 CHROME_BIN=/usr/bin/google-chrome-stable
 
