@@ -296,5 +296,3 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CER
 rm $CONFIG_FILE
 
 echo "Configuração concluída. Por favor, configure manualmente os arquivos de configuração do Nginx."
-
-reboot
