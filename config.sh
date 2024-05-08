@@ -232,11 +232,11 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files \$uri \$uri/ /index.html;
     }
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ =404;
         expires 1y;
         access_log off;
         add_header Cache-Control "public";
