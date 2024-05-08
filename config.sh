@@ -69,7 +69,7 @@ git clone https://github.com/ldurans/izing.io.git
 cd izing.io
 rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg 
 cd backend
-rm -rf package-lock.json
+rm -rf package-lock.json .env.example
 
 cat <<EOF >.env
 # ambiente
