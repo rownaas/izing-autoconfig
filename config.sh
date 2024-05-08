@@ -24,8 +24,8 @@ nvm use 18
 
 # Configurações regionais e de horário
 timedatectl set-timezone America/Sao_Paulo && \
-DEBIAN_FRONTEND=noninteractive apt update && \
-DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE
+DEBIAN_FRONTEND=noninteractive sudo apt update && \
+DEBIAN_FRONTEND=noninteractive sudo apt upgrade -y | tee -a $LOGFILE
 
 # Instalação de dependências de software
 # DEBIAN_FRONTEND=noninteractive apt install -y libgbm-dev wget unzip fontconfig locales \
@@ -35,24 +35,24 @@ DEBIAN_FRONTEND=noninteractive apt upgrade -y | tee -a $LOGFILE
 # libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release \
 # xdg-utils python2-minimal build-essential postgresql redis-server libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev | tee -a $LOGFILE
 
-DEBIAN_FRONTEND=noninteractive apt install -y build-essential postgresql redis-server
+DEBIAN_FRONTEND=noninteractive sudo apt install -y build-essential postgresql redis-server
 
 
 # Configuração do RabbitMQ
-add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
+sudo add-apt-repository -y ppa:rabbitmq/rabbitmq-erlang | tee -a $LOGFILE && \
 wget -qO - https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh |  bash && \
-DEBIAN_FRONTEND=noninteractive apt install -y rabbitmq-server | tee -a $LOGFILE && \
+DEBIAN_FRONTEND=noninteractive sudo apt install -y rabbitmq-server | tee -a $LOGFILE && \
 rabbitmq-plugins enable rabbitmq_management | tee -a $LOGFILE
 
 # Instalação do Google Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
-DEBIAN_FRONTEND=noninteractive apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
-rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
+DEBIAN_FRONTEND=noninteractive sudo apt install -y ./google-chrome-stable_current_amd64.deb | tee -a $LOGFILE && \
+sudo rm google-chrome-stable_current_amd64.deb | tee -a $LOGFILE
 
 # Configuração do PostgreSQL
-sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
-sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
-sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass redis/' /etc/redis/redis.conf | tee -a $LOGFILE
+sudo sed -i -e '/^#listen_addresses/s/^#//; s/listen_addresses = .*/listen_addresses = '\''*'\''/' /etc/postgresql/14/main/postgresql.conf | tee -a $LOGFILE
+sudo sed -i 's/^host[[:space:]]*all[[:space:]]*all[[:space:]]*127\.0\.0\.1\/32.*/host    all             all             0.0.0.0\/0               scram-sha-256/' /etc/postgresql/14/main/pg_hba.conf | tee -a $LOGFILE
+sudo sed -i -e '/^# requirepass /s/^#//; s/requirepass .*/requirepass redis/' /etc/redis/redis.conf | tee -a $LOGFILE
 
 # Atualização da senha do usuário postgres e criação do banco de dados
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" | tee -a $LOGFILE
@@ -63,13 +63,15 @@ rabbitmqctl add_user admin 123456 | tee -a $LOGFILE
 rabbitmqctl set_user_tags admin administrator | tee -a $LOGFILE
 rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
 
+
+
 # Clone do repositório e limpeza
 cd /home/infoway/
 git clone https://github.com/ldurans/izing.io.git
 cd izing.io
-rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg 
+sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg 
 cd backend
-rm -rf package-lock.json .env.example
+sudo rm -rf package-lock.json .env.example
 
 cat <<EOF >.env
 # ambiente
@@ -137,22 +139,22 @@ WEB_VERSION
 POSTGRES_POOL_MAX
 POSTGRES_POOL_MIN
 POSTGRES_POOL_ACQUIRE
-POSTGRES_POOL_IDLE
+POSTGRES_POOL_IDLE         
 EOF
 
 # Ajuste de dependências
-sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json | tee -a $LOGFILE
+sudo sed -i -e 's|"whatsapp-web.js": "github:ldurans/whatsapp-web.js#webpack-exodus"|"whatsapp-web.js": "^1.23.0"|' package.json | tee -a $LOGFILE
 
 # Instalação e construção do backend
 npm install | tee -a $LOGFILE
 npm run build | tee -a $LOGFILE
 npx sequelize db:migrate | tee -a $LOGFILE
-npx sequelize db:seed:all | tee -a $LOGFILE
+npx sequelize db:seed:all | tee -a $LOGFILE  
 
 # Preparação do frontend
 cd ../frontend
 pwd | tee -a $LOGFILE
-rm -rf .env.example
+sudo rm -rf .env.example
 echo "VUE_URL_API='https://$FRONTEND_URL'" > .env
 echo "VUE_FACEBOOK_APP_ID='23156312477653241'" >> .env
 
@@ -162,24 +164,24 @@ nvm use 16
 
 npm i -g @quasar/cli | tee -a $LOGFILE
 npm install | tee -a $LOGFILE
-quasar build -P -m pwa | tee -a $LOGFILE
+sudo quasar build -P -m pwa | tee -a $LOGFILE
 pwd | tee -a $LOGFILE
 cd dist/
 pwd | tee -a $LOGFILE
-cp -rf pwa pwa.bkp
+sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
 npm install -g typescript pm2 | tee -a $LOGFILE
-pm2 update
-pm2 startup systemd -u root | tee -a $LOGFILE
-pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
-pm2 save
+sudo pm2 update
+sudo pm2 startup systemd -u root | tee -a $LOGFILE
+sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+sudo pm2 save
 
 # Configuração do Nginx
-DEBIAN_FRONTEND=noninteractive apt install -y nginx | tee -a $LOGFILE
-touch /etc/nginx/sites-available/$BACKEND_URL
-ln -s /etc/nginx/sites-available/$BACKEND_URL /etc/nginx/sites-enabled/
-cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
+DEBIAN_FRONTEND=noninteractive sudo apt install -y nginx | tee -a $LOGFILE
+sudo touch /etc/nginx/sites-available/$BACKEND_URL
+sudo ln -s /etc/nginx/sites-available/$BACKEND_URL /etc/nginx/sites-enabled/
+sudo cat <<EOF >/etc/nginx/sites-available/$BACKEND_URL
 server {
     listen 80;
     server_name $BACKEND_URL;
@@ -210,9 +212,9 @@ EOF
 
 
 # Configuração do Nginx
-touch /etc/nginx/sites-available/$FRONTEND_URL
-ln -s /etc/nginx/sites-available/$FRONTEND_URL /etc/nginx/sites-enabled/
-cat <<EOF >/etc/nginx/sites-available/$FRONTEND_URL
+sudo touch /etc/nginx/sites-available/$FRONTEND_URL
+sudo ln -s /etc/nginx/sites-available/$FRONTEND_URL /etc/nginx/sites-enabled/
+sudo cat <<EOF >/etc/nginx/sites-available/$FRONTEND_URL
 server {
     listen 80;
     server_name $FRONTEND_URL;
@@ -248,7 +250,7 @@ CONFIG_FILE="req.conf"
 KEY_FILE="/etc/ssl/private/$BACKEND_URL.key"
 CERT_FILE="/etc/ssl/certs/$BACKEND_URL.crt"
 
-cat > $CONFIG_FILE <<EOF
+sudo cat > $CONFIG_FILE <<EOF
 [req]
 prompt = no
 distinguished_name = dn
@@ -263,8 +265,8 @@ CN=Infoway
 emailAddress=teste@gmail.com
 EOF
 
-openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
-rm $CONFIG_FILE
+sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
+sudo rm $CONFIG_FILE
 
 
 # Configuração SSL
@@ -274,7 +276,7 @@ KEY_FILE="/etc/ssl/private/$FRONTEND_URL.key"
 CERT_FILE="/etc/ssl/certs/$FRONTEND_URL.crt"
 
 # Criando o arquivo de configuração
-cat > $CONFIG_FILE <<EOF
+sudo cat > $CONFIG_FILE <<EOF
 [req]
 prompt = no
 distinguished_name = dn
@@ -290,9 +292,9 @@ emailAddress=teste@gmail.com
 EOF
 
 # Executando o comando OpenSSL
-openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
+sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout $KEY_FILE -out $CERT_FILE -config $CONFIG_FILE
 
 # Excluindo o arquivo de configuração
-rm $CONFIG_FILE
+sudo rm $CONFIG_FILE
 
 echo "Configuração concluída. Por favor, configure manualmente os arquivos de configuração do Nginx."
