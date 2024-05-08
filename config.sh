@@ -67,8 +67,8 @@ rabbitmqctl set_permissions -p / admin "." "." ".*" | tee -a $LOGFILE
 
 # Clone do repositório e limpeza
 cd /home/infoway/
-git clone https://github.com/ldurans/izing.io.git
-cd izing.io
+git clone https://github.com/ldurans/izing.open.io.git
+cd izing.open.io
 sudo rm -rf screenshots .vscode .env.example Makefile package.json package-lock.json README.md CHANGELOG.md  donate.jpeg 
 cd backend
 sudo rm -rf package-lock.json .env.example
@@ -174,7 +174,7 @@ sudo cp -rf pwa pwa.bkp
 npm install -g typescript pm2 | tee -a $LOGFILE
 sudo pm2 update
 sudo pm2 startup systemd -u root | tee -a $LOGFILE
-sudo pm2 start /home/infoway/izing.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+sudo pm2 start /home/infoway/izing.open.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
 sudo pm2 save
 
 # Configuração do Nginx
