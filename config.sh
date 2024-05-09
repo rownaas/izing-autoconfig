@@ -171,7 +171,7 @@ pwd | tee -a $LOGFILE
 sudo cp -rf pwa pwa.bkp
 
 # Preparação do PM2
-npm install -g typescript pm2 | tee -a $LOGFILE
+npm install typescript pm2 -g | tee -a $LOGFILE
 sudo pm2 update
 sudo pm2 startup systemd -u root | tee -a $LOGFILE
 sudo pm2 start /home/infoway/izing.open.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
