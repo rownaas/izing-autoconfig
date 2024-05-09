@@ -174,7 +174,7 @@ sudo cp -rf pwa pwa.bkp
 npm install typescript pm2 -g | tee -a $LOGFILE
 sudo pm2 update
 sudo pm2 startup systemd -u root | tee -a $LOGFILE
-sudo pm2 start /home/infoway/izing.open.io/backend/dist/server.js --name "izing-backend" | tee -a $LOGFILE
+sudo pm2 start ~/izing.open.io/backend/dist/server.js --name "izing-backend" --cwd ~/izing.open.io/backend/ | tee -a $LOGFILE
 sudo pm2 save
 
 # Configuração do Nginx
